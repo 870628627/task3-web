@@ -1,25 +1,46 @@
 import sqlite3
+# Creates file "example.db" if necessary
+connection = sqlite3.connect('task3/db.sqlite')
+cursor = connection.cursor()
 
-def create_database():
-    # 连接 SQLite 数据库（如果数据库不存在则创建）
-    conn = sqlite3.connect('artworks.db')
-    cursor = conn.cursor()
 
-    # 创建艺术作品表结构
-    cursor.execute('''
-        CREATE TABLE IF NOT EXISTS artworks (
-            id INTEGER PRIMARY KEY,
-            title TEXT,
-            artist TEXT,
-            year INTEGER,
-            image_url TEXT,
-            description TEXT
-        )
-    ''')
+# SQL statement to create a table
+cursor.execute('''
+CREATE TABLE Clients (
+    ID INT PRIMARY KEY,
+    FirstName TEXT,
+    LastName TEXT,
+    Title TEXT,
+    Country TEXT,
+    Address TEXT,
+    Is_Royal BOOLEAN
 
-    conn.commit()
-    conn.close()
-    print("数据库和表结构创建成功")
+)
+''')
 
-if __name__ == '__main__':
-    create_database()
+# Create Artworks table
+cursor.execute('''
+CREATE TABLE Artworks (
+    ID INTEGER PRIMARY KEY,
+    Title TEXT,
+    Artist TEXT,
+    Year INT
+)
+''')
+
+# Create Purchases table
+cursor.execute('''
+CREATE TABLE IF Purchases (
+    ID INT PRIMARY KEY,
+    Client_ID INT REFERENCES Clients(Client_ID),
+    Artwork_ID INT REFERENCES Artworks(Artwork_ID),
+    Price REAL,
+    Date TEXT
+)
+''')
+
+# Commit changes and close the connection
+connection.commit()
+connection.close()
+
+print("Database and tables created successfully.")
